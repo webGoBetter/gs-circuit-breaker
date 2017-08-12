@@ -149,15 +149,15 @@ public class ReadingApplication {
 include::complete/reading/src/main/resources/application.properties[]
 ----
 
-We now can access, in a browser, the `/to-read` endpoint on our Reading application, and see our reading list. Yet since we rely on the Bookstore application, if anything happens to it, or if Reading is simply unable to access Bookstore, we'll have no list and our users will get a nasty HTTP 500 error message.
+我们现在可以在浏览器中访问阅读应用程序上的 `/to-read` 端点，并查看我们的阅读列表。然而，由于我们依赖于书店应用程序，如果它发生了什么事情，或者如果阅读根本无法访问书店，我们将没有列表，我们的用户将得到一个讨厌的HTTP 500错误消息。
 
 == 应用断路器模式
 
-Netflix's Hystrix library provides an implementation of the Circuit Breaker pattern: when we apply a circuit breaker to a method, Hystrix watches for failing calls to that method, and if failures build up to a threshold, Hystrix opens the circuit so that subsequent calls automatically fail. While the circuit is open, Hystrix redirects calls to the method, and they're passed on to our specified fallback method.
+Netflix的Hystrix库提供的断路器模式的实现：当我们应用一个断路器到一种方法上，Hystrix会观察对该方法的失败调用，如果建立一个入口失败，Hystrix会打开电路，以便于随后自动调用失败处理。当电打开时，Hystrix 重定向调用的方法，他们会被传递到我们指定的回退方法。
 
-Spring Cloud Netflix Hystrix looks for any method annotated with the `@HystrixCommand` annotation, and wraps that method in a proxy connected to a circuit breaker so that Hystrix can monitor it. This currently only works in a class marked with `@Component` or `@Service`, so in the Reading application, under `src/main/java/hello`, add a new class: `BookService`.
+Spring Cloud Netflix Hystrix 寻找任何法有 `@HystrixCommand` 注释的方，包在一个连接到断路器的代理中，使Hystrix可以监控这个方法。目前只在一个类有 `@Component` 或 `@Service` ，所以在阅读应用中，在 `src/main/java/hello`，添加一个新类：`BookService` 。
 
-The `RestTemplate` will be injected into the constructor of the `BookService` when it is created. The complete class should look like this:
+ `RestTemplate` 将在 `BookService` 创建时注入构造函数的。完整类应该如下所示：
 
 `reading/src/main/java/hello/BookService.java`
 [source,java]
@@ -165,9 +165,9 @@ The `RestTemplate` will be injected into the constructor of the `BookService` wh
 include::complete/reading/src/main/java/hello/BookService.java[]
 ----
 
-We've applied `@HystrixCommand` to our original `readingList()` method. We also have a new method here: `reliable()`. The `@HystrixCommand` annotation has `reliable` as its `fallbackMethod`, so if, for some reason, Hystrix opens the circuit on `readingList()`, we'll have an excellent (if short) placeholder reading list ready for our users.
+我们已经应用 `@HystrixCommand` 到我们原来的 `readingList()` 方法上。我们这里也有一个新的方法： `reliable()` 。 `@HystrixCommand` 标注 `reliable` 为作为他的 `fallbackMethod` ，如果因为某些原因，Hystrix打开 `readingList()` 上的电路，我们会为我们的用户准备了一个很好的（如果短的话）占位符阅读清单。
 
-In our main class, `ReadingApplication`, we will create a `RestTemplate` bean, inject the `BookService` and call it for our reading list:
+我们的主类， `ReadingApplication` ，我们将创建一个 `RestTemplate` 组件，注入到 `BookService` ，然后为我们的阅读清单调用它：
 
 `reading/src/main/java/hello/ReadingApplication.java`
 [source,java]
@@ -175,17 +175,17 @@ In our main class, `ReadingApplication`, we will create a `RestTemplate` bean, i
 include::complete/reading/src/main/java/hello/ReadingApplication.java[]
 ----
 
-Now, to retrieve the list from the Bookstore service, we call `bookService.readingList()`. You'll also notice that we've added one last annotation, `@EnableCircuitBreaker`; that's necessary to tell Spring Cloud that the Reading application uses circuit breakers and to enable their monitoring, opening, and closing (behavior supplied, in our case, by Hystrix).
+现在，为了从书店服务检索列表，我们调用  `bookService.readingList()` 。你也会注意到我们已经将最后一个注释， `@EnableCircuitBreaker` ；有必要告诉Spring Cloud阅读应用程序使用断路器，使其监控、开放和关闭（在我们的案例中是通过Hystrix的行为提供（behavior supplied））。
 
 == 试试
 
-Run both the Bookstore service and the Reading service, and then open a browser to the Reading service, at `localhost:8080/to-read`. You should see the complete recommended reading list:
+同时运行书店服务和阅读服务，然后打开一个浏览器访问阅读服务的 `localhost:8080/to-read`端点 。您应该看到完整的推荐阅读清单：
 
 ----
 Spring in Action (Manning), Cloud Native Java (O'Reilly), Learning Spring Boot (Packt)
 ----
 
-Now shut down the Bookstore application. Our list source is gone, but thanks to Hystrix and Spring Cloud Netflix, we have a reliable abbreviated list to stand in the gap; you should see:
+现在关闭书店应用程序。我们的名单来源消失，但多亏了Hystrix 和 Spring Cloud Netflix，我们有一个可靠简短的列表挺身而出；你应该看到：
 
 ----
 Cloud Native Java (O'Reilly)
@@ -193,7 +193,7 @@ Cloud Native Java (O'Reilly)
 
 == 总结
 
-Congratulations! You've just developed a Spring application that uses the Circuit Breaker pattern to protect against cascading failures and to provide fallback behavior for potentially failing calls.
+祝贺你!您刚刚开发了一个Spring应用程序，它使用断路器模式来防止级联故障，并为潜在的失败调用提供回退行为。
 
 
 
