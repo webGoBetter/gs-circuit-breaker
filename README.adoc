@@ -47,7 +47,7 @@ include::https://raw.githubusercontent.com/webGoBetter/{project_id}/master/initi
 // AsciiDoc source formatting doesn't support groovy, so using java instead
 [source,java]
 ----
-include::https://raw.githubusercontent.com/swebGoBetter/{project_id}/master/initial/reading/build.gradle[]
+include::https://raw.githubusercontent.com/webGoBetter/{project_id}/master/initial/reading/build.gradle[]
 ----
 
 include::https://raw.githubusercontent.com/webGoBetter/getting-started-macros/master/spring-boot-gradle-plugin.adoc[]
