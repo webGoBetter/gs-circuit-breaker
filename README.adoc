@@ -157,7 +157,7 @@ Netflix的Hystrix库提供的断路器模式的实现：当我们应用一个断
 
 Spring Cloud Netflix Hystrix 寻找任何法有 `@HystrixCommand` 注释的方，包在一个连接到断路器的代理中，使Hystrix可以监控这个方法。目前只在一个类有 `@Component` 或 `@Service` ，所以在阅读应用中，在 `src/main/java/hello`，添加一个新类：`BookService` 。
 
- `RestTemplate` 将在 `BookService` 创建时注入构造函数的。完整类应该如下所示：
+`RestTemplate` 将在 `BookService` 创建时注入构造函数的。完整类应该如下所示：
 
 `reading/src/main/java/hello/BookService.java`
 [source,java]
